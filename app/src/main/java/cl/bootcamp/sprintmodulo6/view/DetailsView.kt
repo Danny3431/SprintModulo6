@@ -47,7 +47,8 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavController) {
 
-    viewModel.getProductById(productId)
+    // Llamar a `loadProductDetail` para cargar los detalles del producto
+    viewModel.loadProductDetail(productId)
 
 
     val productDetail by viewModel.selectedProduct.collectAsState(initial = null)
@@ -55,7 +56,8 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
 
     // Variables para el correo usando `productDetail` si está disponible
     val email = "info@novaera.cl"
-    val asunto = "Consulta ${productDetail?.name ?: "Producto"} - Id: ${productDetail?.id ?: productId}"
+    val asunto =
+        "Consulta ${productDetail?.name ?: "Producto"} - Id: ${productDetail?.id ?: productId}"
     val mensaje = """Hola, me gustaría obtener más información del móvil ${productDetail?.name} de 
         código ${productDetail?.id}.
          
@@ -82,7 +84,7 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
                         textAlign = TextAlign.Center,
                         fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
 
-                    )
+                        )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondary),
             )
@@ -92,21 +94,24 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
         floatingActionButton = {
             // Botón flotante para enviar correo
             FloatingActionButton(onClick = {
-                // Crear el intent para enviar el correo
-                val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:") // Solo los correos
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"  // Especificar el tipo para contenido de texto
                     putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
                     putExtra(Intent.EXTRA_SUBJECT, asunto)
                     putExtra(Intent.EXTRA_TEXT, mensaje)
                 }
 
-                // Verificar si hay una aplicación de correo configurada
+                // Verificar si hay una aplicación para enviar el correo y abrir un selector de aplicaciones
+                val chooser = Intent.createChooser(intent, "Selecciona una aplicación de correo")
                 if (intent.resolveActivity(context.packageManager) != null) {
-                    // Usar Intent.createChooser para forzar la selección de la aplicación
-                    context.startActivity(Intent.createChooser(intent, "Selecciona una aplicación de correo"))
+                    context.startActivity(chooser)
                 } else {
-                    // En caso de que no haya ninguna app de correo configurada, muestra un Toast
-                    Toast.makeText(context, "No hay ninguna aplicación de correo disponible.", Toast.LENGTH_SHORT).show()
+                    // Mostrar un Toast si no hay aplicaciones compatibles
+                    Toast.makeText(
+                        context,
+                        "No hay ninguna aplicación de correo disponible.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }) {
                 Icon(
@@ -114,9 +119,9 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
                     contentDescription = "Enviar correo",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
+
             }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -132,46 +137,85 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Mostrar la imagen del producto
+                        // Mostrar la imagen del producto y su descripción
                         val imagePainter = rememberAsyncImagePainter(product.image)
-                        Image(
-                            painter = imagePainter,
-                            contentDescription = product.name,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Fit
-                        )
+                        if (product.image.isNullOrEmpty()) { //Si la imagen es nula o vacía
+                            Text(
+                                text = "Imagen no disponible",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
+                        } else {
+                            Image(
+                                painter = imagePainter,
+                                contentDescription = product.name,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = "Nombre: ${product.name}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold)
-                        Text(text = "Precio: $${product.price}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold)
-                        Text(text = "Descripción: ${product.description}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold)
-                        Text(text = "Forma de Pago: ${if (product.credit) "Acepta Crédito" else "Solo Efectivo"}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold)
-                    }
+                        Column(
+                            modifier = Modifier.fillMaxWidth(), // Abarca todo el ancho disponible
+                            horizontalAlignment = Alignment.Start // Alinea el texto a la izquierda
+                        ) {
+                            Text(
+                                text = "Nombre: ${product.name}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Text(
+                                text = "Precio: $${product.price}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Text(
+                                text = "Descripción: ${product.description}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Text(
+                                text = "Precio final: ${product.lastPrice}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Text(
+                                text = "Forma de Pago: ${if (product.credit) "Acepta Crédito" else "Solo Efectivo"}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    } ?: Text(text = "Producto no encontrado")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
                 }
-            } ?: Text(text = "Producto no encontrado")
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
+            }
         }
     }
 }

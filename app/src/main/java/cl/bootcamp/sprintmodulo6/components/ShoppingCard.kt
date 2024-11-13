@@ -43,8 +43,8 @@ fun ShoppingCard(
 // Usa Coil para cargar la imagen desde la URL
     val painter = rememberAsyncImagePainter(
         model = product.image, // URL o imagen
-        contentScale = ContentScale.Crop, // Ajuste de la imagen (opcional)
-        filterQuality = FilterQuality.High // Calidad de la imagen (opcional)
+        contentScale = ContentScale.Crop, // Ajuste de la imagen
+        filterQuality = FilterQuality.High // Calidad de la imagen
     )
     Log.d("ProductImage", "Image URL: ${product.image}")
 

@@ -15,6 +15,7 @@ data class ProductDetail(
     val price: Double,
     val image: String,
     val description: String,
+    val lastPrice: Double,
     val credit: Boolean
 )
 
