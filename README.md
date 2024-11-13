@@ -29,9 +29,14 @@ El proyecto sigue el patrón de arquitectura MVVM para separar las responsabilid
     ├── java/cl/bootcamp/sprintmodulo6
     │   ├── view        # Pantallas en Jetpack Compose
     │   ├── viewmodel   # ProductViewModel y la lógica de datos
+    │   ├── util        # Constants
+    │   ├── iu.theme    # Color, Them, Type
+    │   ├── room        # DB y DAO
     │   ├── model       # Clases de datos del producto
     │   ├── repository  # Repositorio de productos para manejar la API y la DB
     │   ├── navigation  # Navegación entre pantallas
+    │   ├── di          # AppModule
+    │   ├── data        # ApiService, Entity, Retrofit
     │   └── components  # Componentes reutilizables, como la barra de navegación
     └── res
         ├── drawable    # Recursos gráficos
