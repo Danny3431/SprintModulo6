@@ -30,7 +30,7 @@ El proyecto sigue el patrón de arquitectura MVVM para separar las responsabilid
     │   ├── view        # Pantallas en Jetpack Compose
     │   ├── viewmodel   # ProductViewModel y la lógica de datos
     │   ├── util        # Constants
-    │   ├── iu.theme    # Color, Them, Type
+    │   ├── iu.theme    # Color, Theme, Type
     │   ├── room        # DB y DAO
     │   ├── model       # Clases de datos del producto
     │   ├── repository  # Repositorio de productos para manejar la API y la DB
