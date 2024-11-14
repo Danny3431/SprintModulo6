@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ProductRepository @Inject constructor(
+open class ProductRepository @Inject constructor(
     private val productDao: ProductDao,
     private val apiService: ApiService
 ) {

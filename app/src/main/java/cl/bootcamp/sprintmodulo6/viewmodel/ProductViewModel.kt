@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
+
 ) : ViewModel() {
 
     // Estado de lista de productos
