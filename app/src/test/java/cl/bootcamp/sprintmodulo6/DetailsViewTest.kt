@@ -40,7 +40,7 @@ class DetailsViewTest {
     }
 
     @Test
-    fun displayProductDetails() {
+    fun `Mostrar detalles del producto`() {
         val sampleProduct = ProductDetail(
             id = 1,
             name = "Samsung Galaxy A21s 64GB",
