@@ -58,11 +58,20 @@ fun DetailsView(viewModel: ProductViewModel, productId: Int, navController: NavC
     val email = "info@novaera.cl"
     val asunto =
         "Consulta ${productDetail?.name ?: "Producto"} - Id: ${productDetail?.id ?: productId}"
-    val mensaje = """Hola, me gustaría obtener más información del móvil ${productDetail?.name} de 
-        código ${productDetail?.id}.
+    val mensaje = """
+        Hola, me gustaría obtener más información del móvil ${productDetail?.name}, con código ${productDetail?.id}.
+         
          
         Quiero saber cuáles son sus características, precio y formas de pago. 
-        Quedo atento a su respuesta solicitada.
+        
+        Muchas gracias.
+        
+        Quedo atento a su respuesta solicitada. 
+        
+        Saludos cordiales
+        
+        
+        
     """.trimIndent()
     viewModel.loadProductDetail(productId)
 

@@ -51,7 +51,8 @@ class ProductViewModelTest {
     }
 }
 
- class FakeProductDao : ProductDao {
+// Clase simulada para ProductDao
+class FakeProductDao : ProductDao {
     private val products = mutableListOf<ProductEntity>()
 
     override fun getAllProducts(): Flow<List<ProductEntity>> = flowOf(products)
@@ -59,13 +60,18 @@ class ProductViewModelTest {
     override suspend fun insertAll(products: List<ProductEntity>) {
         this.products.addAll(products)
     }
+
+    override suspend fun insert(product: ProductEntity) {
+        products.add(product)
+    }
 }
 
+// Clase simulada para ApiService
 class FakeApiService : ApiService {
-    override suspend fun getProducts(): List<ProductEntity> {
+    override suspend fun getProducts(): List<Product> {
         return listOf(
-            ProductEntity(id = 1, name = "Samsung Galaxy A21s 64GB", price = 100.0, image = "https://images.samsung.com/is/image/samsung/es-galaxy-a21s-sm-a217fzkoeub-262755098?"),
-            ProductEntity(id = 2, name = "Huawei Nova 7 SE 128GB", price = 200.0, image = "https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/nova7-se/img/mob/huawei-nova7-se-mob.png")
+            Product(id = 1, name = "Samsung Galaxy A21s 64GB", price = 100.0, image= "https://images.samsung.com/is/image/samsung/es-galaxy-a21s-sm-a217fzkoeub-262755098?"),
+            Product(id = 2, name = "Huawei Nova 7 SE 128GB", price = 200.0, image = "https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/nova7-se/img/mob/huawei-nova7-se-mob.png")
         )
     }
 
